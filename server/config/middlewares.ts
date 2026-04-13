@@ -7,8 +7,10 @@ export default ({ env }: { env: any }): Core.Config.Middlewares => [
   {
     name: 'strapi::cors',
     config: {
-      origin: env.array('CORS_ORIGIN', ['http://localhost:5173']),
+      origin: [ 'http://localhost:5173',
+  'https://fitness-tracker-qry93lvt8-adityathegreat858-2043s-projects.vercel.app'],
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'],
+      headers: '*',
     },
   },
   'strapi::poweredBy',

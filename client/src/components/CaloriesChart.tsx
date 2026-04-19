@@ -15,8 +15,8 @@ const CaloriesChart = () => {
             const dateString = date.toISOString().split('T')[0];
             const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
 
-            const dailyFood = allFoodLogs.filter(log => log.createdAt?.split('T')[0] === dateString);
-            const dailyActivity = allActivityLogs.filter(log => log.createdAt?.split('T')[0] === dateString);
+            const dailyFood = (allFoodLogs || []).filter(log => log.createdAt?.split('T')[0] === dateString);
+            const dailyActivity = (allActivityLogs || []).filter(log => log.createdAt?.split('T')[0] === dateString);
 
             const intake = dailyFood.reduce((sum, item) => sum + item.calories, 0);
             const burn = dailyActivity.reduce((sum, item) => sum + (item.calories || 0), 0);
@@ -34,7 +34,7 @@ const CaloriesChart = () => {
     const data = getData();
 
     return (
-        <div className="w-full h-75 mt-4">
+        <div className="w-full h-[300px] mt-4">
             <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" className="dark:stroke-slate-700" />

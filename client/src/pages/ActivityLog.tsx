@@ -21,7 +21,7 @@ const [error, setError] = useState('')
 const today = new Date().toISOString().split('T')[0];
 
 const loadActivities = () => {
-    const todaysActivities = allActivityLogs.filter((a: ActivityEntry)=> a.createdAt?.split('T')[0] === today)
+    const todaysActivities = (allActivityLogs || []).filter((a: ActivityEntry)=> a.createdAt?.split('T')[0] === today)
     setActivities(todaysActivities)
    } 
 
@@ -37,8 +37,11 @@ const loadActivities = () => {
       return toast('Please enter valid data')
     }
     try {
-      const { data } = await apiClient.activityLogs.create({data: formData});
-      setAllActivityLogs(prev => [...prev, data])
+      const response: any = await apiClient.activityLogs.create({data: formData});
+      const newEntry = response.data || response;
+      if (newEntry) {
+          setAllActivityLogs(prev => [...prev, newEntry])
+      }
       setFormData({name: '', duration: 0, calories: 0})
       setShowForm(false)
     } catch (error: any) {

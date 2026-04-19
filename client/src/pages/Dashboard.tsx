@@ -18,12 +18,12 @@ const Dashboard = () => {
   //Load user data
   const loadUserData = () => {
     const today = new Date().toISOString().split("T")[0];
-    const foodData = allFoodLogs.filter(
+    const foodData = (allFoodLogs || []).filter(
       (f: FoodEntry) => f.createdAt?.split("T")[0] === today,
     );
     setTodayFood(foodData);
 
-    const activityData = allActivityLogs.filter(
+    const activityData = (allActivityLogs || []).filter(
       (a: ActivityEntry) => a.createdAt?.split("T")[0] === today,
     );
     setTodayActivities(activityData);

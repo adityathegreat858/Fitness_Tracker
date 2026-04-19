@@ -55,13 +55,23 @@ export const AppProvider = ({children} : {children: React.ReactNode})=>{
     }
 
     const fetchFoodLogs = async ()=>{
-        const response = await apiClient.foodLogs.list()
-        setAllFoodLogs(response.data)
+        try {
+            const response: any = await apiClient.foodLogs.list()
+            setAllFoodLogs(Array.isArray(response.data) ? response.data : (Array.isArray(response) ? response : []))
+        } catch(e) {
+            console.error(e)
+            setAllFoodLogs([])
+        }
     }
 
     const fetchActivityLogs = async ()=>{
-        const response = await apiClient.activityLogs.list()
-        setAllActivityLogs(response.data)
+        try {
+            const response: any = await apiClient.activityLogs.list()
+            setAllActivityLogs(Array.isArray(response.data) ? response.data : (Array.isArray(response) ? response : []))
+        } catch(e) {
+            console.error(e)
+            setAllActivityLogs([])
+        }
     }
 
     const logout = ()=>{
@@ -80,7 +90,7 @@ export const AppProvider = ({children} : {children: React.ReactNode})=>{
                 await fetchActivityLogs()
             })();
         }else{
-            setIsUserFetched(true)
+            setTimeout(() => setIsUserFetched(true), 0)
         }
     },[])
 
@@ -96,4 +106,5 @@ export const AppProvider = ({children} : {children: React.ReactNode})=>{
     </AppContext.Provider>
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAppContext = () => useContext(AppContext)

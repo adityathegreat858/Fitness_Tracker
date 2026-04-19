@@ -27,14 +27,17 @@ const FoodLog = () => {
    const today = new Date().toISOString().split('T')[0];
 
    const loadEntries = () => {
-    const todaysEntries = allFoodLogs.filter((e: FoodEntry)=> e.createdAt?.split('T')[0] === today)
+    const todaysEntries = (allFoodLogs || []).filter((e: FoodEntry)=> e.createdAt?.split('T')[0] === today)
     setEntries(todaysEntries)
    }
 
    const handleSubmit = async (e: React.FormEvent)=>{
     e.preventDefault()
-    const {data} = await apiClient.foodLogs.create({data: formData})
-    setAllFoodLogs(prev => [...prev, data])
+    const response: any = await apiClient.foodLogs.create({data: formData})
+    const newEntry = response.data || response;
+    if (newEntry) {
+        setAllFoodLogs(prev => [...prev, newEntry])
+    }
     setFormData({name: '', calories: 0, mealType: ''})
     setShowForm(false)
    }

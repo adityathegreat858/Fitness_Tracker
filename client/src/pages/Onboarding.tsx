@@ -162,8 +162,7 @@ const Onboarding = () => {
                   key={option.value}
                   onClick={()=>{
                     const age = Number(formData.age);
-                    const range = ageRanges.find((r)=>age <= r.max) || ageRanges
-                  [ageRanges.length - 1]
+                    const range = ageRanges.find((r)=>age <= r.max) || ageRanges[ageRanges.length - 1]
 
                   let intake = range.maintain;
                   let burn = range.burn;

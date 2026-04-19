@@ -54,7 +54,7 @@ export const apiClient = {
     update: async (id: string, updates: Partial<UserData>) =>
       request<{ data: User }>(`/users/${id}`, {
         method: "PUT",
-        body: JSON.stringify({ data: updates }),
+        body: JSON.stringify(updates),
       }),
   },
 
@@ -96,7 +96,7 @@ export const apiClient = {
 
   imageAnalysis: {
     analyze: async (base64Image: string) =>
-      request<{ data: { name: string; calories: number } }>("/ai/analyze", {
+      request<{ data: { name: string; calories: number } }>("/image-analysis", {
         method: "POST",
         body: JSON.stringify({ image: base64Image }),
       }),

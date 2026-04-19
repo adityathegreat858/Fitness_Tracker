@@ -7,15 +7,24 @@ export default ({ env }: { env: any }): Core.Config.Middlewares => [
   {
     name: 'strapi::cors',
     config: {
-      origin: [ 'http://localhost:5173',
-  'https://fitness-tracker-qry93lvt8-adityathegreat858-2043s-projects.vercel.app'],
+      origin: env('CORS_ORIGIN') ? env('CORS_ORIGIN').split(',') : ['http://localhost:5173', 'http://localhost:3000'],
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'],
       headers: '*',
     },
   },
   'strapi::poweredBy',
   'strapi::query',
-  'strapi::body',
+  {
+    name: 'strapi::body',
+    config: {
+      formLimit: '10mb',
+      jsonLimit: '10mb',
+      textLimit: '10mb',
+      formidable: {
+        maxFileSize: 10 * 1024 * 1024,
+      },
+    },
+  },
   'strapi::session',
   'strapi::favicon',
   'strapi::public',

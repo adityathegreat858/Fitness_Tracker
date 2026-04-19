@@ -3,11 +3,8 @@ import fs from "fs";
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY,
 });
-export const analyzeImage = async (filePath: string) => {
+export const analyzeImage = async (base64ImageFile: string) => {
   try {
-    const base64ImageFile = fs.readFileSync(filePath, {
-      encoding: "base64",
-    });
     const contents = [
       {
         inlineData: {

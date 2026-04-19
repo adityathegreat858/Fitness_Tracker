@@ -17,11 +17,11 @@ export default ({ env }: { env: any }): Core.Config.Middlewares => [
   {
     name: 'strapi::body',
     config: {
-      formLimit: '10mb',
-      jsonLimit: '10mb',
-      textLimit: '10mb',
+      formLimit: '50mb',
+      jsonLimit: '50mb',
+      textLimit: '50mb',
       formidable: {
-        maxFileSize: 10 * 1024 * 1024,
+        maxFileSize: 50 * 1024 * 1024,
       },
     },
   },

@@ -45,13 +45,21 @@ export const AppProvider = ({children} : {children: React.ReactNode})=>{
     }
 
     const fetchUser = async (token: string)=>{
-        const response = await apiClient.user.me()
-        const currentUser = { ...(response as Exclude<User, null>), token } as Exclude<User, null>;
-        setUser(currentUser)
-        if(currentUser.age && currentUser.weight && currentUser.goal){
-            setOnboardingCompleted(true)
+        try {
+            const response = await apiClient.user.me()
+            const currentUser = { ...(response as Exclude<User, null>), token } as Exclude<User, null>;
+            setUser(currentUser)
+            if(currentUser.age && currentUser.weight && currentUser.goal){
+                setOnboardingCompleted(true)
+            }
+        } catch (error) {
+            console.error("Failed to fetch user, logging out...", error);
+            localStorage.removeItem('token');
+            setUser(null);
+            setOnboardingCompleted(false);
+        } finally {
+            setIsUserFetched(true)
         }
-        setIsUserFetched(true)
     }
 
     const fetchFoodLogs = async ()=>{

@@ -1,0 +1,16 @@
+.env
+.tmp
+node_modules
+.strapi
+yarn-error.log
+.DS_Store
+yarn.lock
+package-lock.json
+build
+dist
+public
+.next
+.react-email
+.npm
+.cursor
+.cursorrules

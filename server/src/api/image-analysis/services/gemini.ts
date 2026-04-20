@@ -10,11 +10,18 @@ export const analyzeImage = async (base64ImageFile: string) => {
     let mimeType = "image/jpeg";
     let data = base64ImageFile;
 
-    // Extract mime type if the input is a data URL
-    const match = base64ImageFile.match(/^data:([^;]+);base64,(.+)$/);
-    if (match) {
-      mimeType = match[1];
-      data = match[2];
+    // Extract mime type if the input is a data URL safely without regex
+    if (base64ImageFile.startsWith("data:")) {
+      const commaIndex = base64ImageFile.indexOf(",");
+      if (commaIndex !== -1) {
+        const mimePart = base64ImageFile.slice(5, commaIndex);
+        if (mimePart.endsWith(";base64")) {
+          mimeType = mimePart.slice(0, -7);
+        } else {
+          mimeType = mimePart;
+        }
+        data = base64ImageFile.slice(commaIndex + 1);
+      }
     }
 
     const contents = [

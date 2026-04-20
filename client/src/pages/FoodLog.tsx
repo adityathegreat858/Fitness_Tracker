@@ -79,24 +79,69 @@ const FoodLog = () => {
 
     const reader = new FileReader();
 
-    reader.onloadend = async () => {
-      const base64 = reader.result as string;
-      const response = await apiClient.imageAnalysis.analyze(base64);
+    reader.onloadend = () => {
+      const img = new Image();
+      img.onload = async () => {
+        const canvas = document.createElement("canvas");
+        const MAX_WIDTH = 800;
+        const MAX_HEIGHT = 800;
+        let width = img.width;
+        let height = img.height;
 
-      setFormData({
-        name: response.data?.name || "Unknown Food",
-        calories: response.data?.calories || 0,
-        mealType: "lunch",
-      });
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width;
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width *= MAX_HEIGHT / height;
+            height = MAX_HEIGHT;
+          }
+        }
 
-      setShowForm(true);
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx?.drawImage(img, 0, 0, width, height);
+
+        const base64 = canvas.toDataURL("image/jpeg", 0.7);
+        
+        try {
+          const response = await apiClient.imageAnalysis.analyze(base64);
+
+          setFormData({
+            name: response.data?.name || "Unknown Food",
+            calories: response.data?.calories || 0,
+            mealType: "lunch",
+          });
+
+          setShowForm(true);
+        } catch (error) {
+          console.error(error);
+          toast.error("Failed to analyze image");
+        } finally {
+          setLoading(false);
+        }
+      };
+      
+      img.onerror = () => {
+        toast.error("Failed to read image");
+        setLoading(false);
+      };
+      
+      img.src = reader.result as string;
+    };
+
+    reader.onerror = () => {
+      toast.error("Failed to read file");
+      setLoading(false);
     };
 
     reader.readAsDataURL(file);
   } catch (error) {
     console.error(error);
-    toast.error("Failed to analyze image");
-  } finally {
+    toast.error("Failed to initialize image analysis");
     setLoading(false);
   }
 };

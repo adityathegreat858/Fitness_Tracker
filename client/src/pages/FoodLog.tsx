@@ -80,7 +80,7 @@ const FoodLog = () => {
     const reader = new FileReader();
 
     reader.onloadend = async () => {
-      const base64 = (reader.result as string).split(",")[1];
+      const base64 = reader.result as string;
       const response = await apiClient.imageAnalysis.analyze(base64);
 
       setFormData({

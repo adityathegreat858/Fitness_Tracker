@@ -1,15 +1,27 @@
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI, Type } from "@google/genai";
 import fs from "fs";
+
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY,
 });
+
 export const analyzeImage = async (base64ImageFile: string) => {
   try {
+    let mimeType = "image/jpeg";
+    let data = base64ImageFile;
+
+    // Extract mime type if the input is a data URL
+    const match = base64ImageFile.match(/^data:([^;]+);base64,(.+)$/);
+    if (match) {
+      mimeType = match[1];
+      data = match[2];
+    }
+
     const contents = [
       {
         inlineData: {
-          mimeType: "image/jpeg",
-          data: base64ImageFile,
+          mimeType: mimeType,
+          data: data,
         },
       },
       {
@@ -19,11 +31,11 @@ export const analyzeImage = async (base64ImageFile: string) => {
 
     const config = {
       responseMimeType: "application/json",
-      responseJsonSchema: {
-        type: "object",
+      responseSchema: {
+        type: Type.OBJECT,
         properties: {
-          name: { type: "string" },
-          calories: { type: "number" },
+          name: { type: Type.STRING },
+          calories: { type: Type.NUMBER },
         },
       },
     };
@@ -34,9 +46,15 @@ export const analyzeImage = async (base64ImageFile: string) => {
       config,
     });
 
-    return JSON.parse(response.text);
+    let text = response.text;
+    // Strip markdown formatting if any
+    if (text.startsWith("```json")) {
+      text = text.replace(/^```json\n/, "").replace(/\n```$/, "");
+    }
+
+    return JSON.parse(text);
   } catch (error) {
-    console.log(error);
+    console.error("Gemini API Error:", error);
     throw error;
   }
 };
